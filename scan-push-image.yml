@@ -1,0 +1,39 @@
+name: Build and push Docker image
+ 
+on:
+  push:
+    branches:
+      - main
+ 
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+ 
+      - name: Build image
+        run: |
+          docker build . -t seavmeng/django.nv:latest
+          docker build . -t seavmeng/django.nv:${{ github.sha }}
+ 
+      - name: Run Trivy scan
+        uses: aquasecurity/trivy-action@v2
+        with:
+          image-ref: seavmeng/django.nv:${{ github.sha }}
+          severity: CRITICAL
+          format: table
+          output: console
+          fail-on-severity: CRITICAL
+ 
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ seavmeng }}
+          password: ${{ Se@vmengchh@m }}
+ 
+      - name: Push image to Docker Hub
+        run: |
+          echo "Push image to Docker Hub..."
+          docker push seavmeng/django.nv:latest
+          docker push seavmeng/django.nv:${{ github.sha }}
