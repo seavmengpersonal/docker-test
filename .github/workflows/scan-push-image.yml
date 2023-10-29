@@ -32,7 +32,7 @@ jobs:
           username: Seavmeng
           password: Se@vmengchh@m
  
-      - name: Push image to Docker Hub
+      - name: Push image to Docker Hub CI
         run: |
           echo "Push image to Docker Hub..."
           docker push seavmeng/docker-test:latest
